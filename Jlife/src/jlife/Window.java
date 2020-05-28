@@ -15,9 +15,9 @@ import javax.swing.JButton;
  */
 public class Window extends JFrame implements ActionListener
 {
+    private MenuBar menu;
     private JPanel confPanel;
     private JPanel viewPanel;
-    private JButton nextButton;
     
     public Window( int sizeX, int sizeY)
     {
@@ -28,6 +28,8 @@ public class Window extends JFrame implements ActionListener
         
         setSize( sizeX, sizeY );
         setTitle( "JLife" );
+        
+        setJMenuBar( new MenuBar() );
         
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         setVisible( true );
