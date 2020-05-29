@@ -6,11 +6,9 @@
 package jlife;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.stream.JsonWriter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -160,7 +158,6 @@ public class MenuBar extends JMenuBar implements ActionListener {
                                
             } catch( Exception ex ) {
                 JOptionPane.showMessageDialog( null, "Saving file error" );
-                System.out.println( ex );
             }
         }
     }

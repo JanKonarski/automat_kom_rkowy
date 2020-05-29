@@ -4,26 +4,40 @@ package jlife;
  * @author Jan Konarski
  * @author Maciej Kołek
  */
-public abstract class Matrix
+public class Matrix
 {
-    protected int sizeX;
-    protected int sizeY;
+    protected int width;
+    protected int height;
     protected byte[] matrix;
     
-    public int getXsize()
-    {
-        return sizeX;
+    public Matrix(int width, int height) {
+        if(width < 50 || height < 50)
+            throw new IllegalArgumentException( "" );
+        
+        this.width = width;
+        this.height = height;
+        this.matrix = new byte[width * height];
     }
     
-    public int getYsize()
-    {
-        return sizeY;
+    public int getWidth() {
+        return width;
     }
     
-    public byte[] getMatrix()
-    {
+    public int getHeight() {
+        return height;
+    }
+    
+    public byte[] getMatrix() {
         return matrix;
     }
     
-    public abstract void next();
+    public void next() {
+        int coresNum = Runtime.getRuntime().availableProcessors();
+        this.next(coresNum);
+    }
+    
+    public void next(int coresNum)
+    {
+        // next generation with threads
+    }
 }

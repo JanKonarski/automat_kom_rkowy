@@ -4,20 +4,20 @@ import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.assertEquals;
 
-import jlife.Mat;
+import jlife.Matrix;
 
 /**
  * @author Jan Konarski
  * @author Maciej Kołek
  */
-public class MatTest {
+public class MatreixTest {
     
-    private Mat mat;
+    private Matrix mat;
     
     @Before
     public void setUp()
     {
-        mat = new Mat( 5, 5 );
+        mat = new Matrix( 5, 5 );
     }
     
     @Test
@@ -25,7 +25,7 @@ public class MatTest {
     {
         System.out.println( "Mat X size" );
         int expRes = 5;
-        int res = mat.getXsize();
+        int res = mat.getWidth();
         assertEquals( res, expRes );
     }
     
