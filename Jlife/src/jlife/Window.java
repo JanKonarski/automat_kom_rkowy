@@ -1,17 +1,27 @@
 package jlife;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import javax.swing.JFileChooser;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Jan Konarski
@@ -19,24 +29,26 @@ import javax.swing.KeyStroke;
  */
 public class Window extends JFrame implements ActionListener
 {
-    private Color gbColor = new Color(70, 70, 70);
-    private Color menuColor = new Color(218, 223, 225);
-    private Color menuItemColor = new Color(53, 53, 53);
-    private Font fontStyle = new Font("Heebo", Font.CENTER_BASELINE, 12);
+    private final Color gbColor = new Color(70, 70, 70);
+    private final Color menuColor = new Color(218, 223, 225);
+    private final Color menuItemColor = new Color(53, 53, 53);
+    private final Font fontStyle = new Font("Heebo", Font.CENTER_BASELINE, 12);
     
-    private JMenuBar menuBar;
+    private final JMenuBar menuBar;
     
-    private JMenu fileMenu;
-    private JMenuItem importItem;
-    private JMenuItem exportItem;
-    private JMenuItem saveItem;
-    private JMenuItem nextItem;
-    private JMenuItem clearItem;
-    private JMenuItem exitItem;
+    private final JMenu fileMenu;
+    private final JMenuItem importItem;
+    private final JMenuItem exportItem;
+    private final JMenuItem saveItem;
+    private final JMenuItem nextItem;
+    private final JMenuItem clearItem;
+    private final JMenuItem exitItem;
     
-    private JMenu aboutMenu;
+    private final JMenu aboutMenu;
     
     private JPanel viewPanel;
+    
+    private Matrix mat;
     
     public Window(int width, int height)
     {
@@ -115,15 +127,135 @@ public class Window extends JFrame implements ActionListener
             setJMenuBar(menuBar);
         }
         
-        setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        setVisible( true );
+        {
+            viewPanel = new JPanel();
+        }
+        
+        mat = new Matrix(50, 50);
+        
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setVisible(true);
     }
     
     @Override
     public void actionPerformed( ActionEvent e )
     {
-        if(e.getSource() == exitItem)
+        if( e.getSource() == importItem )
+            importGeneration();
+        
+        if( e.getSource() == exportItem )
+            exportGeneration();
+        
+        if( e.getSource() == saveItem )
+            saveImage();
+        
+        if( e.getSource() == nextItem ) {
+            // next
+            // rifresh planszy
+        }
+        
+        if ( e.getSource() == clearItem )
+            clearBoard();
+        
+        if( e.getSource() == exitItem )
             System.exit(0);
+    }
+    
+    private void importGeneration() {
+        try {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("Import generation from file");
+            String extension = "JavaScript Object Notation file(.json)";
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(extension, ".json");
+            chooser.setFileFilter(filter);
+            if( chooser.showOpenDialog( this ) != JFileChooser.APPROVE_OPTION )
+                throw new Exception( "Importing file error" );
+
+            Gson gson = new Gson();
+            File file = chooser.getSelectedFile();
+            FileReader reader = new FileReader(file);
+            JsonObject jsonObj = gson.fromJson(reader, JsonObject.class);
+            
+            int width = jsonObj.get("weight").getAsInt();
+            int height = jsonObj.get("height").getAsInt();
+            JsonArray jsonArray = jsonObj.get("cells").getAsJsonArray();
+            
+            Matrix mat = new Matrix(width, height);
+            for( JsonElement el : jsonArray ) {
+                JsonObject elObject = el.getAsJsonObject();
+                int x = elObject.get("x").getAsInt();
+                int y = elObject.get("y").getAsInt();
+                String type = elObject.get("type").getAsString();
+                
+                // obsługa struktur
+            }
+            
+            // rifresh planszy
+            
+        } catch( Exception e ) {
+            JOptionPane.showMessageDialog(null, "Importing file error");
+        }
+    }
+    
+    private void exportGeneration() {
+        try {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("Export generation from file");
+            chooser.setSelectedFile(new File("generation.json"));
+            String extension = "JavaScript Object Notation file(.json)";
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(extension, ".json");
+            chooser.setFileFilter(filter);
+            if( chooser.showSaveDialog( this ) != JFileChooser.APPROVE_OPTION )
+                throw new Exception( "Exporting file error" );
+            
+            String fileName = chooser.getSelectedFile().toString();
+            if( !fileName.endsWith(".json") )
+                chooser.setSelectedFile(new File(fileName + ".json"));
+            
+            JsonObject jsonObj = new JsonObject();
+            jsonObj.addProperty("width", mat.getWidth());
+            jsonObj.addProperty("height", mat.getHeight());
+            JsonArray jsonArray = new JsonArray();
+            for( int i=0; i < mat.getMatrix().length; i++ ) {
+                int x = mat.getCoorfinates(i)[0];
+                int y = mat.getCoorfinates(i)[1];
+                int type = mat.getCell(i);
+                if( type == 0 )
+                    continue;
+                
+                JsonObject elObj = new JsonObject();
+                elObj.addProperty("x", x);
+                elObj.addProperty("y", y);
+                elObj.addProperty("type", String.valueOf(type));
+                jsonArray.add(elObj);
+            }
+            jsonObj.add("cells", jsonArray);
+            
+            Gson gson = new Gson();
+            String json = gson.toJson(jsonObj);
+            
+            File file = chooser.getSelectedFile();
+            FileWriter writer = new FileWriter(file);
+            writer.write(json);
+            writer.close();
+            
+        } catch( Exception e ) {
+            JOptionPane.showMessageDialog(null, "Exporting file error");
+        }
+    }
+    
+    private void saveImage() {
+        try {
+            
+            
+        } catch( Exception e ) {
+            JOptionPane.showMessageDialog(null, "Saving image error");
+        }
+    }
+    
+    private void clearBoard() {
+        mat = new Matrix(50, 50);
+        // rifresh planszy
     }
     
 }
