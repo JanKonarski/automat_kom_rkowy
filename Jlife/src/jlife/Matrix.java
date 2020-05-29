@@ -72,8 +72,7 @@ public class Matrix
         this.next(coresNum);
     }
     
-    public void next(int coresNum)
-    {
+    public void next(int coresNum) {
         // next generation with threads
     }
 }

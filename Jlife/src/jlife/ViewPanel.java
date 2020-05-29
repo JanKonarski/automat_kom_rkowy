@@ -9,8 +9,7 @@ import javax.swing.JPanel;
 public class ViewPanel extends JPanel
 {
     
-    public ViewPanel()
-    {
+    public ViewPanel() {
         
     }
     
