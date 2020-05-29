@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -61,7 +62,9 @@ public class Window extends JFrame implements ActionListener
         }
         this.setSize(new Dimension(width, height));
         this.getContentPane().setBackground(gbColor);
-        setTitle("JLife");
+        this.setTitle("JLife");
+        
+        mat = new Matrix(50, 50);
         
         { //Menu
             menuBar = new JMenuBar();
@@ -128,13 +131,19 @@ public class Window extends JFrame implements ActionListener
         }
         
         {
-            viewPanel = new JPanel();
+            viewPanel = new ViewPanel(mat);
+            
+            JScrollPane scroll = new JScrollPane(viewPanel);
+            scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            
+            this.add(scroll);
         }
         
-        mat = new Matrix(50, 50);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setVisible(true);
         
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        System.out.println(viewPanel.getWidth() + "@" + viewPanel.getHeight());
     }
     
     @Override
