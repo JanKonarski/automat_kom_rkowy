@@ -17,14 +17,14 @@ public class MatreixTest {
     @Before
     public void setUp()
     {
-        mat = new Matrix( 5, 5 );
+        mat = new Matrix( 50, 50 );
     }
     
     @Test
     public void testGetXsize()
     {
         System.out.println( "Mat X size" );
-        int expRes = 5;
+        int expRes = 50;
         int res = mat.getWidth();
         assertEquals( res, expRes );
     }

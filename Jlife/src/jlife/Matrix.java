@@ -33,12 +33,12 @@ public class Matrix
         if( position < 0 || position > matrix.length )
             throw new IllegalArgumentException();
         
-        int y = position % height;
+        int y = position / height;
         int x = position - y * height;
         return new int[] {x, y};
     }
     
-    public void setCell( int x, int y, byte type ) { // !!!podaje ujemne wartości!!!
+    public void setCell( int x, int y, byte type ) {
         int position = getPosition(x, y);
         matrix[position] = type;
     }
