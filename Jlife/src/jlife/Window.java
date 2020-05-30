@@ -185,24 +185,37 @@ public class Window extends JFrame implements ActionListener
             FileReader reader = new FileReader(file);
             JsonObject jsonObj = gson.fromJson(reader, JsonObject.class);
             
-            int width = jsonObj.get("weight").getAsInt();
+            int width = jsonObj.get("width").getAsInt();
             int height = jsonObj.get("height").getAsInt();
+            
             JsonArray jsonArray = jsonObj.get("cells").getAsJsonArray();
             
             Matrix mat = new Matrix(width, height);
+            
             for( JsonElement el : jsonArray ) {
                 JsonObject elObject = el.getAsJsonObject();
                 int x = elObject.get("x").getAsInt();
                 int y = elObject.get("y").getAsInt();
                 String type = elObject.get("type").getAsString();
                 
-                // obsługa struktur
+                int pos = mat.getPosition(x, y);
+                mat.matrix[pos] = convertToType(type); 
             }
             
             // rifresh planszy
             
         } catch( Exception e ) {
             JOptionPane.showMessageDialog(null, "Importing file error");
+        }
+    }
+    
+    private byte convertToType (String type) {
+        switch (type) {
+            case "conductor":  return 1;
+            case "tail":   return 2;
+            case "head": return 1;
+            case "empty":  return 0;
+            default: return 0;
         }
     }
     
