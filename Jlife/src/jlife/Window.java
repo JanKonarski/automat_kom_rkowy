@@ -146,6 +146,7 @@ public class Window extends JFrame implements ActionListener
         System.out.println(viewPanel.getWidth() + "@" + viewPanel.getHeight());
     }
     
+    
     @Override
     public void actionPerformed( ActionEvent e )
     {

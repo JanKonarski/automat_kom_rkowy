@@ -98,6 +98,7 @@ public class Matrix
         int y = getCoorfinates(i)[1];
         int neighNum = 0;
         
+        
         int startPosX = (x - 1 < 0) ? x : x-1;
         int startPosY = (y - 1 < 0) ? y : y-1;
         int endPosX =   (x + 1 > width - 1) ? x : x+1;
