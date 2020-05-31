@@ -1,17 +1,16 @@
 package jlife;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import javax.swing.BorderFactory;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JPanel;
 
 /**
  * @author Jan Konarski
  * @author Maciej Kołek
  */
-public class ViewPanel extends JPanel
-{
+public class ViewPanel extends JPanel implements MouseListener {
     
     private final Color types[] = new Color[] {
         new Color(14, 15, 13),
@@ -20,9 +19,11 @@ public class ViewPanel extends JPanel
         new Color(247, 202, 24)
     };
     
-    private JPanel[] cells;
+    private Matrix mat;
+    private Cell[] cells;
     
     public ViewPanel(Matrix mat) {
+        this.mat = mat;
         this.setBackground(Color.LIGHT_GRAY);
         
         int width = mat.getWidth();
@@ -30,19 +31,37 @@ public class ViewPanel extends JPanel
         this.setLayout(new GridLayout(width, height));
         
         int length = mat.getMatrix().length;
-        cells = new JPanel[length];
-        int counter = 0;
-        for( JPanel cell : cells ) {
-            cell = new JPanel();
-            cell.setBorder(BorderFactory.createLineBorder(new Color(78, 78, 78), 1));
-            cell.setPreferredSize(new Dimension(20, 20));
-            cell.addMouseListener(new CellListener());
-            int type = mat.getMatrix()[counter];
-            cell.setBackground(types[type]);
+        cells = new Cell[length];
+        for( int i=0; i < length; i++ ) {
+            cells[i] = new Cell(mat, i);
+            cells[i].addMouseListener(this);
             
-            this.add(cell);
-            counter++;
+            this.add(cells[i]);
         }
     }
+    
+    public void refresh() {
+        int length = cells.length;
+        for( int i=0; i < length; i++)
+            cells[i].reload();
+    }
+    
+    @Override
+    public void mouseClicked( MouseEvent e ) {
+        Cell source = (Cell)e.getSource();
+        source.changeBG();
+    }
+    
+    @Override
+    public void mouseEntered( MouseEvent e ) {}
+    
+    @Override
+    public void mousePressed( MouseEvent e ) {}
+
+    @Override
+    public void mouseReleased( MouseEvent e ) {}
+    
+    @Override
+    public void mouseExited( MouseEvent e ) {}
     
 }

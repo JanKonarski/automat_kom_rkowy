@@ -7,11 +7,14 @@ import com.google.gson.JsonObject;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
 import javax.swing.JFrame;
@@ -19,16 +22,20 @@ import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
+import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
+import javax.swing.JFileChooser;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  * @author Jan Konarski
  * @author Maciej Kołek
  */
-public class Window extends JFrame implements ActionListener
+public class Window extends JFrame implements ActionListener, MenuListener
 {
     private final Color gbColor = new Color(70, 70, 70);
     private final Color menuColor = new Color(218, 223, 225);
@@ -47,7 +54,7 @@ public class Window extends JFrame implements ActionListener
     
     private final JMenu aboutMenu;
     
-    private JPanel viewPanel;
+    private ViewPanel viewPanel;
     
     private Matrix mat;
     
@@ -124,7 +131,7 @@ public class Window extends JFrame implements ActionListener
             aboutMenu = new JMenu("About");
             aboutMenu.setFont(fontStyle);
             aboutMenu.setForeground(menuColor);
-            aboutMenu.addActionListener(this);
+            aboutMenu.addMenuListener(this);
             menuBar.add(aboutMenu);
             
             setJMenuBar(menuBar);
@@ -142,10 +149,7 @@ public class Window extends JFrame implements ActionListener
         
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
-        
-        System.out.println(viewPanel.getWidth() + "@" + viewPanel.getHeight());
     }
-    
     
     @Override
     public void actionPerformed( ActionEvent e )
@@ -160,8 +164,9 @@ public class Window extends JFrame implements ActionListener
             saveImage();
         
         if( e.getSource() == nextItem ) {
-            // next
+            mat.next();
             // rifresh planszy
+            viewPanel.refresh();
         }
         
         if ( e.getSource() == clearItem )
@@ -170,6 +175,16 @@ public class Window extends JFrame implements ActionListener
         if( e.getSource() == exitItem )
             System.exit(0);
     }
+    
+    @Override
+    public void menuSelected( MenuEvent e ) {
+        JOptionPane.showMessageDialog( null, "The Game of Life Program v1.0" );
+    }
+    
+    @Override
+    public void menuDeselected( MenuEvent e ) {}
+    @Override
+    public void menuCanceled( MenuEvent e ) {}
     
     private void importGeneration() {
         try {
@@ -186,21 +201,21 @@ public class Window extends JFrame implements ActionListener
             FileReader reader = new FileReader(file);
             JsonObject jsonObj = gson.fromJson(reader, JsonObject.class);
             
-            int width = jsonObj.get("width").getAsInt();
+            int width = jsonObj.get("weight").getAsInt();
             int height = jsonObj.get("height").getAsInt();
-            
             JsonArray jsonArray = jsonObj.get("cells").getAsJsonArray();
             
             Matrix mat = new Matrix(width, height);
-            
             for( JsonElement el : jsonArray ) {
                 JsonObject elObject = el.getAsJsonObject();
                 int x = elObject.get("x").getAsInt();
                 int y = elObject.get("y").getAsInt();
                 String type = elObject.get("type").getAsString();
                 
-                int pos = mat.getPosition(x, y);
-                mat.matrix[pos] = convertToType(type); 
+                // obsługa struktur
+                
+                int position = mat.getPosition(x, y);
+                mat.setCell(x, y, convertToType(type));
             }
             
             // rifresh planszy
@@ -210,8 +225,8 @@ public class Window extends JFrame implements ActionListener
         }
     }
     
-    private byte convertToType (String type) {
-        switch (type) {
+    private byte convertToType( String type ) {
+        switch( type ) {
             case "conductor":  return 1;
             case "tail":   return 2;
             case "head": return 1;
@@ -223,7 +238,7 @@ public class Window extends JFrame implements ActionListener
     private void exportGeneration() {
         try {
             JFileChooser chooser = new JFileChooser();
-            chooser.setDialogTitle("Export generation from file");
+            chooser.setDialogTitle("Export generation to file");
             chooser.setSelectedFile(new File("generation.json"));
             String extension = "JavaScript Object Notation file(.json)";
             FileNameExtensionFilter filter = new FileNameExtensionFilter(extension, ".json");
@@ -269,7 +284,27 @@ public class Window extends JFrame implements ActionListener
     
     private void saveImage() {
         try {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("Saving generation to image");
+            chooser.setSelectedFile(new File("generation.png"));
+            String extension = "Portable Network Graphics file(.png)";
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(extension, ".png");
+            chooser.setFileFilter(filter);
+            if( chooser.showSaveDialog( this ) != JFileChooser.APPROVE_OPTION )
+                throw new Exception( "Saving image error" );
             
+            String fileName = chooser.getSelectedFile().toString();
+            if( !fileName.endsWith(".png") )
+                chooser.setSelectedFile(new File(fileName + ".png"));
+            
+            int width = viewPanel.getWidth();
+            int height = viewPanel.getHeight();
+            BufferedImage buff = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            Graphics2D graphic = buff.createGraphics();
+            viewPanel.paint(graphic);
+            
+            File file = chooser.getSelectedFile();
+            ImageIO.write(buff, "png", file);
             
         } catch( Exception e ) {
             JOptionPane.showMessageDialog(null, "Saving image error");

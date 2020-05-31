@@ -43,6 +43,13 @@ public class Matrix
         matrix[position] = type;
     }
     
+    public void setCell( int position, byte type ) {
+        if( position < 0 || position > matrix.length )
+            throw new IllegalArgumentException();
+        
+        matrix[position] = type;
+    }
+    
     public int getWidth() {
         return width;
     }
@@ -74,18 +81,18 @@ public class Matrix
     
     public void next(int coresNum) {
         // next generation with threads
-        for( int i=0; i < matrix.length; i++) {
-            if(matrix[i] == 0)
+        for( int i=0; i < matrix.length; i++ ) {
+            if( matrix[i] == 0 )
                 continue;
-            if(matrix[i] == 1) {
+            if( matrix[i] == 1 ) {
                 matrix[i] = 2;
                 continue;
             }
-            if(matrix[i] == 2) {
+            if( matrix[i] == 2 ) {
                 matrix[i] = 3;
                 continue;
             }
-            if(matrix[i] == 3) {
+            if( matrix[i] == 3 ) {
                 if( countNeighbours( i ) == 1 || countNeighbours( i ) == 2 )
                     matrix[i] = 1;
             }
@@ -93,24 +100,21 @@ public class Matrix
         }
     }
     
-    private int countNeighbours( int i ){
+    private int countNeighbours( int i ) {
         int x = getCoorfinates(i)[0];
         int y = getCoorfinates(i)[1];
         int neighNum = 0;
         
-        
         int startPosX = (x - 1 < 0) ? x : x-1;
         int startPosY = (y - 1 < 0) ? y : y-1;
-        int endPosX =   (x + 1 > width - 1) ? x : x+1;
-        int endPosY =   (y + 1 > height - 1) ? y : y+1;
+        int endPosX = (x + 1 > width - 1) ? x : x+1;
+        int endPosY = (y + 1 > height - 1) ? y : y+1;
 
-        for (int rowNum=startPosX; rowNum<=endPosX; rowNum++) {
-            for (int colNum=startPosY; colNum<=endPosY; colNum++) {
-                if(matrix[i] == 1)
+        for( int rowNum=startPosX; rowNum <= endPosX; rowNum++ )
+            for( int colNum=startPosY; colNum <= endPosY; colNum++ )
+                if( matrix[i] == 1 )
                     neighNum++;
-            }
-        }
-        return neighNum-1;
+                
+        return neighNum - 1;
     }
 }
-
