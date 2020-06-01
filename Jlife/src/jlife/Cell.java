@@ -39,22 +39,22 @@ public class Cell extends JPanel {
     public void changeBG() {
         if( this.getBackground().equals(types[0]) ) {
             this.setBackground(types[1]);
-            mat.setCell(position, (byte)(0));
+            mat.setCell(position, (byte)(1));
         }
         
         else if (this.getBackground().equals(types[1]) ) {
             this.setBackground(types[2]);
-            mat.setCell(position, (byte)(1));
+            mat.setCell(position, (byte)(2));
         }
         
         else if (this.getBackground().equals(types[2]) ) { 
             this.setBackground(types[3]);
-            mat.setCell(position, (byte)(2));
+            mat.setCell(position, (byte)(3));
         }
         
         else if (this.getBackground().equals(types[3]) ) {
             this.setBackground(types[0]);
-            mat.setCell(position, (byte)(3));
+            mat.setCell(position, (byte)(0));
         }
     }
     

@@ -1,5 +1,7 @@
 package jlife;
 
+import java.util.Vector;
+
 /**
  * @author Jan Konarski
  * @author Maciej Kołek
@@ -81,23 +83,31 @@ public class Matrix
     
     public void next(int coresNum) {
         // next generation with threads
+        Vector<Integer> vec = new Vector<Integer>();
+        Vector<Byte> vecB = new Vector<Byte>();
+        
         for( int i=0; i < matrix.length; i++ ) {
-            if( matrix[i] == 0 )
-                continue;
-            if( matrix[i] == 1 ) {
-                matrix[i] = 2;
-                continue;
+            switch( matrix[i] ) {
+            case (byte)0: break;
+            case (byte)1: int count = countNeighbours( i );   
+                if( count == 1 || count == 2 ) {
+                    vec.addElement(i);
+                    vecB.addElement((byte)3);
+                };
+                break;
+            case (byte)2: 
+                vec.addElement(i);
+                vecB.addElement((byte)1);
+                break;
+            case (byte)3: vec.addElement(i);
+                vecB.addElement((byte)2);
+                break;
+            default: break;
             }
-            if( matrix[i] == 2 ) {
-                matrix[i] = 3;
-                continue;
-            }
-            if( matrix[i] == 3 ) {
-                if( countNeighbours( i ) == 1 || countNeighbours( i ) == 2 )
-                    matrix[i] = 1;
-            }
-       
         }
+        
+        for(int i = 0; i < vec.size(); i++ )
+            matrix[vec.get(i)] = vecB.get(i);
     }
     
     private int countNeighbours( int i ) {
@@ -112,9 +122,9 @@ public class Matrix
 
         for( int rowNum=startPosX; rowNum <= endPosX; rowNum++ )
             for( int colNum=startPosY; colNum <= endPosY; colNum++ )
-                if( matrix[i] == 1 )
+                if( matrix[getPosition(rowNum, colNum)] == 3 )
                     neighNum++;
                 
-        return neighNum - 1;
+        return neighNum;
     }
 }

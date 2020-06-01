@@ -201,7 +201,7 @@ public class Window extends JFrame implements ActionListener, MenuListener
             FileReader reader = new FileReader(file);
             JsonObject jsonObj = gson.fromJson(reader, JsonObject.class);
             
-            int width = jsonObj.get("weight").getAsInt();
+            int width = jsonObj.get("width").getAsInt();
             int height = jsonObj.get("height").getAsInt();
             JsonArray jsonArray = jsonObj.get("cells").getAsJsonArray();
             
