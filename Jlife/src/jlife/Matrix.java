@@ -131,4 +131,10 @@ public class Matrix
                 
         return neighNum;
     }
+    
+    public void clean() {
+        for( int i=0; i < matrix.length; i++)
+            matrix[i] = 0;
+    }
+    
 }

@@ -162,7 +162,6 @@ public class Window extends JFrame implements ActionListener, MenuListener
         
         if( e.getSource() == nextItem ) {
             mat.next();
-            // rifresh planszy
             viewPanel.refresh();
         }
         
@@ -309,8 +308,8 @@ public class Window extends JFrame implements ActionListener, MenuListener
     }
     
     private void clearBoard() {
-        mat = new Matrix(50, 50);
-        // rifresh planszy
+        mat.clean();
+        viewPanel.refresh();
     }
     
 }
