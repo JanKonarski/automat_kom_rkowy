@@ -14,12 +14,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
-import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;

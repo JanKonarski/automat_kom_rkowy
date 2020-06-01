@@ -75,38 +75,42 @@ public class Matrix
         
         return matrix[position];
     }
-    
+/*    
     public void next() {
         int coresNum = Runtime.getRuntime().availableProcessors();
         this.next(coresNum);
     }
-    
-    public void next(int coresNum) {
+*/    
+//    public void next( int coresNum ) {
+    public void next() {
         // next generation with threads
         Vector<Integer> vec = new Vector<Integer>();
         Vector<Byte> vecB = new Vector<Byte>();
         
         for( int i=0; i < matrix.length; i++ ) {
             switch( matrix[i] ) {
-            case (byte)0: break;
-            case (byte)1: int count = countNeighbours( i );   
+            
+            case (byte)3:
+                int count = countNeighbours( i );
                 if( count == 1 || count == 2 ) {
                     vec.addElement(i);
-                    vecB.addElement((byte)3);
-                };
+                    vecB.addElement((byte)1);
+                }
                 break;
-            case (byte)2: 
+                
+            case (byte)1: 
                 vec.addElement(i);
-                vecB.addElement((byte)1);
-                break;
-            case (byte)3: vec.addElement(i);
                 vecB.addElement((byte)2);
                 break;
-            default: break;
+                
+            case (byte)2:
+                vec.addElement(i);
+                vecB.addElement((byte)3);
+                break;
             }
         }
         
-        for(int i = 0; i < vec.size(); i++ )
+        for( int i=0; i < vec.size(); i++ )
             matrix[vec.get(i)] = vecB.get(i);
     }
     
@@ -115,14 +119,14 @@ public class Matrix
         int y = getCoorfinates(i)[1];
         int neighNum = 0;
         
-        int startPosX = (x - 1 < 0) ? x : x-1;
-        int startPosY = (y - 1 < 0) ? y : y-1;
-        int endPosX = (x + 1 > width - 1) ? x : x+1;
-        int endPosY = (y + 1 > height - 1) ? y : y+1;
+        int startPosX = (x == 0) ? x : x-1;
+        int startPosY = (y == 0) ? y : y-1;
+        int endPosX = (x >= width) ? x : x+1;
+        int endPosY = (y >= height) ? y : y+1;
 
         for( int rowNum=startPosX; rowNum <= endPosX; rowNum++ )
             for( int colNum=startPosY; colNum <= endPosY; colNum++ )
-                if( matrix[getPosition(rowNum, colNum)] == 3 )
+                if( matrix[getPosition(rowNum, colNum)] == 1 )
                     neighNum++;
                 
         return neighNum;

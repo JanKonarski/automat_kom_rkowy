@@ -22,7 +22,7 @@ public class MatreixTest
     
     @Test
     public void testGetXsize() {
-        System.out.println( "Mat X size" );
+        System.out.println( "Mat width" );
         int expRes = 50;
         int res = mat.getWidth();
         assertEquals( res, expRes );
