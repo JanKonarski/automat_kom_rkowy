@@ -56,6 +56,8 @@ public class Window extends JFrame implements ActionListener, MenuListener
     
     private Matrix mat;
     
+    private int count = 0;
+    
     public Window(int width, int height)
     {
         frameInit();
@@ -103,7 +105,7 @@ public class Window extends JFrame implements ActionListener, MenuListener
             
             fileMenu.addSeparator();
             
-            nextItem = new JMenuItem("Next Generation", 'N');
+            nextItem = new JMenuItem("Next Generation (0)", 'N');
             nextItem.setFont(fontStyle);
             nextItem.setForeground(menuItemColor);
             nextItem.setAccelerator(KeyStroke.getKeyStroke("ctrl N"));
@@ -152,8 +154,11 @@ public class Window extends JFrame implements ActionListener, MenuListener
     @Override
     public void actionPerformed( ActionEvent e )
     {
-        if( e.getSource() == importItem )
+        if( e.getSource() == importItem ) {
             importGeneration();
+            count = 0;
+            nextItem.setText("Next Generation (0)");
+        }
         
         if( e.getSource() == exportItem )
             exportGeneration();
@@ -164,10 +169,15 @@ public class Window extends JFrame implements ActionListener, MenuListener
         if( e.getSource() == nextItem ) {
             mat.next();
             viewPanel.refresh();
+            count++;
+            nextItem.setText("Next Generation (" + count + ")");
         }
         
-        if ( e.getSource() == clearItem )
+        if ( e.getSource() == clearItem ) {
             clearBoard();
+            count = 0;
+            nextItem.setText("Next Generation (0)");
+        }
         
         if( e.getSource() == exitItem )
             System.exit(0);
