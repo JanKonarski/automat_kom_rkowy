@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -201,7 +202,8 @@ public class Window extends JFrame implements ActionListener, MenuListener
             int height = jsonObj.get("height").getAsInt();
             JsonArray jsonArray = jsonObj.get("cells").getAsJsonArray();
             
-            Matrix mat = new Matrix(width, height);
+            mat.clean();
+            
             for( JsonElement el : jsonArray ) {
                 JsonObject elObject = el.getAsJsonObject();
                 int x = elObject.get("x").getAsInt();
@@ -209,12 +211,18 @@ public class Window extends JFrame implements ActionListener, MenuListener
                 String type = elObject.get("type").getAsString();
                 
                 // obsługa struktur
-                
-                int position = mat.getPosition(x, y);
-                mat.setCell(x, y, convertToType(type));
+                Vector<Object> tmp = new Parser().get(type);
+                Object[] arr = (Object[])tmp.get(1);
+                for( int i=0; i < arr.length; i+=3 ) {
+                    byte newType = (byte)arr[i];
+                    int newX = x + (int)arr[i + 1];
+                    int newY = y + (int)arr[i + 2];
+                    mat.setCell(newX, newY, newType);
+                }
+                // obsługa struktur
             }
             
-            // rifresh planszy
+            viewPanel.refresh();
             
         } catch( Exception e ) {
             JOptionPane.showMessageDialog(null, "Importing file error");
@@ -223,10 +231,10 @@ public class Window extends JFrame implements ActionListener, MenuListener
     
     private byte convertToType( String type ) {
         switch( type ) {
-            case "conductor":  return 1;
-            case "tail":   return 2;
-            case "head": return 1;
-            case "empty":  return 0;
+            case "0":  return 0;
+            case "1":   return 1;
+            case "2": return 2;
+            case "3":  return 3;
             default: return 0;
         }
     }
