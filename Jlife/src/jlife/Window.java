@@ -187,9 +187,9 @@ public class Window extends JFrame implements ActionListener, MenuListener
         try {
             JFileChooser chooser = new JFileChooser();
             chooser.setDialogTitle("Import generation from file");
-            String extension = "JavaScript Object Notation file(.json)";
-            FileNameExtensionFilter filter = new FileNameExtensionFilter(extension, ".json");
-            chooser.setFileFilter(filter);
+            //String extension = "JavaScript Object Notation file(.json)";
+            //FileNameExtensionFilter filter = new FileNameExtensionFilter(extension, ".json");
+            //chooser.setFileFilter(filter);
             if( chooser.showOpenDialog( this ) != JFileChooser.APPROVE_OPTION )
                 throw new Exception( "Importing file error" );
 
@@ -226,16 +226,6 @@ public class Window extends JFrame implements ActionListener, MenuListener
             
         } catch( Exception e ) {
             JOptionPane.showMessageDialog(null, "Importing file error");
-        }
-    }
-    
-    private byte convertToType( String type ) {
-        switch( type ) {
-            case "0":  return 0;
-            case "1":   return 1;
-            case "2": return 2;
-            case "3":  return 3;
-            default: return 0;
         }
     }
     
